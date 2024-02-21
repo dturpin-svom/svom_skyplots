@@ -13,6 +13,7 @@ Created on Mon Nov 21 14:37:49 2022
 
 @author: dt270490
 """
+import os
 import numpy as np
 import healpy as hp
 from healpy.newvisufunc import projview, newprojplot
@@ -39,7 +40,7 @@ def compute_theta_phi(grb_pos:pd.DataFrame, coord_sys:str):
     coord_sys : str
         DESCRIPTION.
 
-    Returns
+    Returnsos.getcwd()
     -------
     None.
 
@@ -135,6 +136,7 @@ class plots:
         
     def plot_sky_position(self,grb_pos:pd.DataFrame,
                           too_pos:pd.DataFrame,
+                          outdir:str,
                           savefig:bool):
         """
         Plot the GRB and ToO positions in an all sky map
@@ -145,6 +147,8 @@ class plots:
             Gathers the burst_id and the equatorial coordinates of the SVOM GRBs
         too_pos : pd.dataframe
             Gathers the ToO_id and the equatorial coordinates of the SVOM ToOs.
+        outdir: str
+            The path where you want to save the figures.
         savefig: Boolean
             Whether you want to save the figure or not.
         Returns
@@ -238,7 +242,9 @@ class plots:
                     ls='',
                     mec = self.lasttoo_color);
         
-        plt.savefig("SVOM_skymap_"+self.coord_syst+".png", dpi=200)
+        if savefig:
+            
+            plt.savefig(outdir+"SVOM_skymap_"+self.coord_syst+".png", dpi=200)
         
 if __name__ == '__main__':
     
@@ -262,4 +268,4 @@ if __name__ == '__main__':
     
     #make the plot
     svom_skymap = plots("equ")
-    svom_skymap.plot_sky_position(grb_pos,too_pos,True)
+    svom_skymap.plot_sky_position(grb_pos,too_pos,os.getcwd()+"/",True)

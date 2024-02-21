@@ -29,18 +29,19 @@ def get_grb_pos(grb_pos_file):
     
     return grb_pos
 
-def compute_theta_phi(grb_pos:pd.DataFrame, coord_sys:str):
+def compute_theta_phi(pos:pd.DataFrame, coord_sys:str):
     """
     
 
     Parameters
     ----------
-    grb_pos;pd.DataFrame : TYPE
-        DESCRIPTION.
+    pos;pd.DataFrame : TYPE
+        Gathers the equatorial coordinates of the SVOM GRBs or ToO.
     coord_sys : str
-        DESCRIPTION.
+        Whether you want a skymap in galactic ("gal") or equatorial ("equ")
+        coordinates.
 
-    Returnsos.getcwd()
+    Returns
     -------
     None.
 
@@ -55,21 +56,21 @@ def compute_theta_phi(grb_pos:pd.DataFrame, coord_sys:str):
         coord_theta = "dec"
         coord_phi = "ra"
         
-    mask_long = grb_pos[coord_phi] >180 # need to separate
+    mask_long = pos[coord_phi] >180 # need to separate
     if type(mask_long) == np.bool_ and mask_long:
-        theta = np.deg2rad((grb_pos[coord_theta]* -1) + 90)
-        phi = np.deg2rad(grb_pos[coord_phi]-360)
+        theta = np.deg2rad((pos[coord_theta]* -1) + 90)
+        phi = np.deg2rad(pos[coord_phi]-360)
     elif type(mask_long) == np.bool_ and not mask_long:
-        theta = np.deg2rad((grb_pos[coord_theta]* -1) + 90)
-        phi = np.deg2rad(grb_pos[coord_phi])
+        theta = np.deg2rad((pos[coord_theta]* -1) + 90)
+        phi = np.deg2rad(pos[coord_phi])
     
     if not type(mask_long) == np.bool_:
         if mask_long.any():
-            theta1 = np.deg2rad((grb_pos[mask_long][coord_theta]* -1) + 90)
-            phi1 = np.deg2rad(grb_pos[mask_long][coord_phi]-360)
+            theta1 = np.deg2rad((pos[mask_long][coord_theta]* -1) + 90)
+            phi1 = np.deg2rad(pos[mask_long][coord_phi]-360)
         if not mask_long.all():
-            theta2 = np.deg2rad((grb_pos[~mask_long][coord_theta]* -1) + 90)
-            phi2 = np.deg2rad(grb_pos[~mask_long][coord_phi])
+            theta2 = np.deg2rad((pos[~mask_long][coord_theta]* -1) + 90)
+            phi2 = np.deg2rad(pos[~mask_long][coord_phi])
         
         theta = np.concatenate((theta1.values,theta2.values))
         phi = np.concatenate((phi1.values,phi2.values))
@@ -268,4 +269,4 @@ if __name__ == '__main__':
     
     #make the plot
     svom_skymap = plots("equ")
-    svom_skymap.plot_sky_position(grb_pos,too_pos,os.getcwd()+"/",True)
+    svom_skymap.plot_sky_position(grb_pos,too_pos,os.getcwd()+"/skymap_example/",True)
